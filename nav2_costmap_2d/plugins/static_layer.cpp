@@ -91,7 +91,7 @@ void StaticLayer::onInitialize()
   custom_qos_profile.depth = 1;
   custom_qos_profile.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
   map_sub_ = node_->create_subscription<nav_msgs::msg::OccupancyGrid>(map_topic,
-      std::bind(&StaticLayer::incomingMap, this, std::placeholders::_1), custom_qos_profile);
+      std::bind(&StaticLayer::incomingMap, this, std::placeholders::_1));
   map_received_ = false;
   has_updated_data_ = false;
 
@@ -110,7 +110,7 @@ void StaticLayer::onInitialize()
     RCLCPP_INFO(node_->get_logger(), "Subscribing to updates");
     map_update_sub_ = node_->create_subscription<map_msgs::msg::OccupancyGridUpdate>(
       map_topic + "_updates",
-      std::bind(&StaticLayer::incomingUpdate, this, std::placeholders::_1), custom_qos_profile);
+      std::bind(&StaticLayer::incomingUpdate, this, std::placeholders::_1));
 
   } else {
     has_updated_data_ = true;
@@ -223,7 +223,6 @@ void StaticLayer::incomingMap(const nav_msgs::msg::OccupancyGrid::SharedPtr new_
   height_ = size_y_;
   map_received_ = true;
   has_updated_data_ = true;
-
   // shutdown the map subscrber if firt_map_only_ flag is on
   if (first_map_only_) {
     RCLCPP_INFO(node_->get_logger(),
